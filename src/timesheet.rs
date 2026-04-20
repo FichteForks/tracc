@@ -119,8 +119,9 @@ where
 
 pub fn parse_minutes(value: &str) -> Result<i64, String> {
     let value = value.trim();
-    if value.len() == 4 && value.chars().all(|chr| chr.is_ascii_digit()) {
-        return clock_time_to_minutes(value, &value[..2], &value[2..]);
+    if (3..=4).contains(&value.len()) && value.chars().all(|chr| chr.is_ascii_digit()) {
+        let value = format!("{:0>4}", value);
+        return clock_time_to_minutes(&value, &value[..2], &value[2..]);
     }
 
     if let Some((hours, minutes)) = value.split_once(':') {
@@ -173,6 +174,11 @@ mod tests {
     #[test]
     fn rejects_compact_form_with_minutes_over_59() {
         assert!(parse_minutes("1060").is_err());
+    }
+
+    #[test]
+    fn accepts_three_digit_compact_form() {
+        assert_eq!(parse_minutes("940").unwrap(), 580);
     }
 }
 
