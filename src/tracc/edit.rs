@@ -103,7 +103,13 @@ impl EditState {
             KeyCode::Backspace if input.modifiers.contains(KeyModifiers::CONTROL) => {
                 self.delete_prev_word()
             }
+            KeyCode::Char('w') if input.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.delete_prev_word()
+            }
             KeyCode::Delete if input.modifiers.contains(KeyModifiers::CONTROL) => {
+                self.delete_next_word()
+            }
+            KeyCode::Char('d') if input.modifiers == KeyModifiers::ALT => {
                 self.delete_next_word()
             }
             KeyCode::Backspace => self.backspace(),
