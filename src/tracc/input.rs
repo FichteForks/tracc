@@ -12,6 +12,7 @@ pub(crate) enum InputState {
     Editing(EditState),
     Confirm(ConfirmState),
     Prefix(PrefixState),
+    Help,
     Quit,
 }
 
@@ -36,6 +37,7 @@ impl Tracc {
                     InputState::Editing(edit) => self.handle_edit_input(edit, input)?,
                     InputState::Confirm(confirm) => self.handle_confirm_input(confirm, input)?,
                     InputState::Prefix(prefix) => self.handle_prefix_input(prefix, input)?,
+                    InputState::Help => self.handle_help_input(input),
                     InputState::Quit => InputState::Quit,
                 };
             }
@@ -147,6 +149,7 @@ impl Tracc {
                 }
             }
             KeyCode::Char(' ') => Ok(InputState::Normal),
+            KeyCode::Char('?') => Ok(InputState::Help),
             KeyCode::Char('-') => self.guard_mutation(
                 PendingAction::ShiftCurrent(-1),
                 self.timesheet_change_message(),
@@ -219,6 +222,10 @@ impl Tracc {
                 Ok(InputState::Normal)
             }
         }
+    }
+
+    fn handle_help_input(&mut self, _input: KeyEvent) -> InputState {
+        InputState::Normal
     }
 
     fn handle_confirm_input(

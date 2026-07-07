@@ -11,6 +11,7 @@ use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use std::io;
 mod confirm;
+mod help;
 mod layout;
 mod timesheet;
 mod tracc;

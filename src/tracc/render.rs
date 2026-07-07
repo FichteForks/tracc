@@ -2,6 +2,7 @@ use super::edit::EditKind;
 use super::input::InputState;
 use super::Tracc;
 use crate::confirm::{self, ConfirmDialog};
+use crate::help;
 use crate::layout;
 use crate::timesheet::{TimePoint, TimeSheet};
 use ratatui::layout::Rect;
@@ -61,6 +62,7 @@ impl Tracc {
             InputState::Confirm(confirm) => Some((confirm.message.clone(), confirm.selected)),
             _ => None,
         };
+        let show_help = matches!(self.input_state, InputState::Help);
 
         self.terminal.draw(|frame| {
             frame.render_stateful_widget(timelist, chunks[0], &mut state);
@@ -80,6 +82,11 @@ impl Tracc {
             if let Some((message, selected)) = confirm.as_ref() {
                 let popup_area = confirm::area(frame.area());
                 ConfirmDialog::new(message.as_str(), *selected).render(frame, popup_area);
+            }
+
+            if show_help {
+                let popup_area = help::area(frame.area());
+                help::render(frame, popup_area);
             }
         })?;
         Ok(())
